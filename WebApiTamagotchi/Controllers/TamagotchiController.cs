@@ -29,6 +29,60 @@ namespace WebApiTamagotchi.Controllers
             return "Ofer is the king";
         }
 
+        [Route("GetAllGames")]
+        [HttpGet]
+        public List<ActionOptionDTO> GetAllGames()
+        {
+            PlayerDTO pDto = HttpContext.Session.GetObject<PlayerDTO>("player");
+            //Check if user logged in!
+            if (pDto != null)
+            {
+                const int OPTION_PLAY = 3;
+                List<ActionOption> list = context.ActionOptions.Where(a => a.ActionTypeId == OPTION_PLAY).ToList();
+                List<ActionOptionDTO> listDTO = new List<ActionOptionDTO>();
+                if (list != null)
+                {
+                    foreach (ActionOption a in list)
+                    {
+                        listDTO.Add(new ActionOptionDTO(a));
+                    }
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                return listDTO;
+            }
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return null;
+            }
+        }
+
+        [Route("DoActionPlay")]
+        [HttpPost]
+        public void DoActionPlay([FromBody] ActionOptionDTO actionOptionDTO)
+        {
+            PlayerDTO pDto = HttpContext.Session.GetObject<PlayerDTO>("player");
+            //Check if user logged in!
+            if (pDto != null)
+            {
+                Player p = context.Players.Where(pp => pp.PlayerId == pDto.PlayerId).FirstOrDefault();
+                List<Pet> pets = context.Pets.Where(ppp => ppp.PlayerId == p.PlayerId).ToList();
+                const int DEAD_STATUS_ID = 4;
+                Pet pet = pets.Where(p => p.LifeStatusId != DEAD_STATUS_ID).FirstOrDefault();
+                pet.HappyLevel += (int)actionOptionDTO.OptionEffect;
+                History h = new History()
+                {
+                    PetId = pet.PetId,
+                    TimeOfAction = DateTime.Now,
+                    OptionId = (int)actionOptionDTO.OptionId,
+                    LifeCycleId = pet.LifeCycleId,
+                    LifeStatusId = pet.LifeStatusId
+                };
+                context.AddHistory(h);
+                context.SaveChanges();
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            }
+        }
 
         [Route("Login")]
         [HttpGet]
@@ -53,6 +107,9 @@ namespace WebApiTamagotchi.Controllers
                 return null;
             }
         }
+
+
+        
 
         [Route("GetAnimals")]
         [HttpGet]

@@ -16,6 +16,8 @@ namespace WebApiTamagotchi.DataTransferObjects
         public int HungerLevel { get; set; }
         public int CleaningLevel { get; set; }
         public int HappyLevel { get; set; }
+        public int LifeCycleId { get; set; }
+        public int LifeStatusId { get; set; }
 
         public PetDTO() { }
         public PetDTO(Pet a)
@@ -28,6 +30,8 @@ namespace WebApiTamagotchi.DataTransferObjects
             HungerLevel = (int)a.HungerLevel;
             CleaningLevel = (int)a.CleaningLevel;
             HappyLevel = (int)a.HappyLevel;
+            LifeCycleId = (int)a.LifeCycleId;
+            LifeStatusId = (int)a.LifeStatusId;
         }
     }
 }

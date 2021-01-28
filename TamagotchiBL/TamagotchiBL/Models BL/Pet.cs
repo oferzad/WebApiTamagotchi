@@ -20,9 +20,8 @@ namespace TamagotchiBL.Models
                 LifeCycleId = this.LifeCycleId,
                 LifeStatusId = this.LifeStatusId
             };
-            
-            //UIMain.db.AddHistory(h);
-            //UIMain.db.SaveChanges();
+            UIMain.db.AddHistory(h);
+            UIMain.db.SaveChanges();
         }
 
         public void DoActionClean(ActionOption actionOption)
@@ -36,8 +35,8 @@ namespace TamagotchiBL.Models
                 LifeCycleId = this.LifeCycleId,
                 LifeStatusId = this.LifeStatusId
             };
-            //UIMain.db.AddHistory(h);
-            //UIMain.db.SaveChanges();
+            UIMain.db.AddHistory(h);
+            UIMain.db.SaveChanges();
         }
 
         public void feed(ActionOption a)
@@ -51,9 +50,9 @@ namespace TamagotchiBL.Models
                 LifeCycleId = this.LifeCycleId,
                 LifeStatusId = this.LifeStatusId
             };
-            //UIMain.db.AddHistory(h);
-            //this.CleaningLevel = this.CleaningLevel - (a.OptionEffect / 2);
-            //UIMain.db.SaveChanges();
+            UIMain.db.AddHistory(h);
+            this.CleaningLevel = this.CleaningLevel - (a.OptionEffect / 2);
+            UIMain.db.SaveChanges();
         }
 
         public string levels(int? level, string option)
