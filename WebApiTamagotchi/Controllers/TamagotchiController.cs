@@ -111,7 +111,7 @@ namespace WebApiTamagotchi.Controllers
 
         
 
-        [Route("GetAnimals")]
+        [Route("GetPets")]
         [HttpGet]
         public List<PetDTO> GetAnimals()
         {
