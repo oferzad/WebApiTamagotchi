@@ -21,29 +21,16 @@ namespace TamagotchiBL.Models
             return list;
         }
 
-        public List<ActionOption> GetAllCleans()
-        {
-            const int OPTION_CLEAN = 2;
-            List<ActionOption> list = this.ActionOptions.Where(a => a.ActionTypeId == OPTION_CLEAN).ToList();
-            return list;
-        }
-
-        //public List<History> GetAllHistory()
-        //{
-        //    const int DEAD_STATUS_ID = 4;
-        //    //Pet p = UIMain.CurrentPlayer.Pets.Where(p => p.LifeStatusId != DEAD_STATUS_ID).FirstOrDefault();
-        //    //List<History> list = this.Histories.Where(h => h.PetId == p.PetId).ToList();
-        //    return list;
-        //}
-
         public void AddPlayer(Player p)
         {
             this.Players.Add(p);
+            this.SaveChanges();
         }
 
         public void AddHistory(History h)
         {
             this.Histories.Add(h);
+            this.SaveChanges();
         }
 
         public List<ActionOption> GetAllActions()
@@ -58,5 +45,46 @@ namespace TamagotchiBL.Models
             List<ActionOption> list = this.ActionOptions.Where(a => a.ActionTypeId == foodID).ToList();
             return list;
         }
+
+        public void DoActionPlay(ActionOption actionOption, int playerId)
+        {
+            Player p = this.Players.Where(pp => pp.PlayerId == playerId).FirstOrDefault();
+            List<Pet> pets = this.Pets.Where(ppp => ppp.PlayerId == p.PlayerId).ToList();
+            const int DEAD_STATUS_ID = 4;
+            Pet pet = pets.Where(p => p.LifeStatusId != DEAD_STATUS_ID).FirstOrDefault();
+            pet.HappyLevel += actionOption.OptionEffect;
+            History h = new History()
+            {
+                PetId = pet.PetId,
+                TimeOfAction = DateTime.Now,
+                OptionId = actionOption.OptionId,
+                LifeCycleId = pet.LifeCycleId,
+                LifeStatusId = pet.LifeStatusId
+            };
+            this.AddHistory(h);
+            this.SaveChanges();
+        }
+
+        public void feed(ActionOption actionOption, int playerId)
+        {
+            Player p = this.Players.Where(pp => pp.PlayerId == playerId).FirstOrDefault();
+            List<Pet> pets = this.Pets.Where(ppp => ppp.PlayerId == p.PlayerId).ToList();
+            const int DEAD_STATUS_ID = 4;
+            Pet pet = pets.Where(p => p.LifeStatusId != DEAD_STATUS_ID).FirstOrDefault();
+            pet.HungerLevel += actionOption.OptionEffect;
+            History h = new History()
+            {
+                PetId = pet.PetId,
+                TimeOfAction = DateTime.Now,
+                OptionId = actionOption.OptionId,
+                LifeCycleId = pet.LifeCycleId,
+                LifeStatusId = pet.LifeStatusId
+            };
+            this.AddHistory(h);
+            pet.CleaningLevel = pet.CleaningLevel - (actionOption.OptionEffect / 2);
+            this.SaveChanges();
+        }
+
+
     }
 }

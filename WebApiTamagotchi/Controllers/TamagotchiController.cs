@@ -37,8 +37,7 @@ namespace WebApiTamagotchi.Controllers
             //Check if user logged in!
             if (pDto != null)
             {
-                const int OPTION_PLAY = 3;
-                List<ActionOption> list = context.ActionOptions.Where(a => a.ActionTypeId == OPTION_PLAY).ToList();
+                List<ActionOption> list = context.GetAllGames();
                 List<ActionOptionDTO> listDTO = new List<ActionOptionDTO>();
                 if (list != null)
                 {
@@ -65,31 +64,70 @@ namespace WebApiTamagotchi.Controllers
             //Check if user logged in!
             if (pDto != null)
             {
-                Player p = context.Players.Where(pp => pp.PlayerId == pDto.PlayerId).FirstOrDefault();
-                List<Pet> pets = context.Pets.Where(ppp => ppp.PlayerId == p.PlayerId).ToList();
-                const int DEAD_STATUS_ID = 4;
-                Pet pet = pets.Where(p => p.LifeStatusId != DEAD_STATUS_ID).FirstOrDefault();
-                pet.HappyLevel += (int)actionOptionDTO.OptionEffect;
-                History h = new History()
+                ActionOption actionOption = new ActionOption
                 {
-                    PetId = pet.PetId,
-                    TimeOfAction = DateTime.Now,
-                    OptionId = (int)actionOptionDTO.OptionId,
-                    LifeCycleId = pet.LifeCycleId,
-                    LifeStatusId = pet.LifeStatusId
+                    OptioName = actionOptionDTO.OptioName,
+                    OptionEffect = actionOptionDTO.OptionEffect,
+                    OptionId = actionOptionDTO.OptionId
                 };
-                context.AddHistory(h);
-                context.SaveChanges();
+                context.DoActionPlay(actionOption, pDto.PlayerId);
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
         }
+
+        [Route("GetAllFood")]
+        [HttpGet]
+        public List<ActionOptionDTO> GetAllFood()
+        {
+            PlayerDTO pDto = HttpContext.Session.GetObject<PlayerDTO>("player");
+            //Check if user logged in!
+            if (pDto != null)
+            {
+                List<ActionOption> list = context.GetFoodList();
+                List<ActionOptionDTO> listDTO = new List<ActionOptionDTO>();
+                if (list != null)
+                {
+                    foreach (ActionOption a in list)
+                    {
+                        listDTO.Add(new ActionOptionDTO(a));
+                    }
+                }
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                return listDTO;
+            }
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return null;
+            }
+        }
+
+
+        [Route("DoActionFeed")]
+        [HttpPost]
+        public void DoActionFeed([FromBody] ActionOptionDTO actionOptionDTO)
+        {
+            PlayerDTO pDto = HttpContext.Session.GetObject<PlayerDTO>("player");
+            //Check if user logged in!
+            if (pDto != null)
+            {
+                ActionOption actionOption = new ActionOption
+                {
+                    OptioName = actionOptionDTO.OptioName,
+                    OptionEffect = actionOptionDTO.OptionEffect,
+                    OptionId = actionOptionDTO.OptionId
+                };
+                context.feed(actionOption, pDto.PlayerId);
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            }
+        }
+
 
         [Route("Login")]
         [HttpGet]
         public PlayerDTO Login([FromQuery] string email, [FromQuery] string pass)
         {
             Player p = context.Login(email, pass);
-
             //Check user name and password
             if (p != null)
             {
@@ -102,18 +140,15 @@ namespace WebApiTamagotchi.Controllers
             }
             else
             {
-
                 Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                 return null;
             }
         }
 
 
-        
-
         [Route("GetPets")]
         [HttpGet]
-        public List<PetDTO> GetAnimals()
+        public List<PetDTO> GetPets()
         {
             PlayerDTO pDto = HttpContext.Session.GetObject<PlayerDTO>("player");
             //Check if user logged in!
@@ -129,7 +164,6 @@ namespace WebApiTamagotchi.Controllers
                     }
                 }
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-
                 return list;
             }
             else
