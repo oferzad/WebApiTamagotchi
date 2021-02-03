@@ -165,6 +165,7 @@ namespace WebApiTamagotchi.Controllers
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
                 context.Players.Add(p1);
+                context.SaveChanges();
             }
             else
             {
