@@ -170,7 +170,33 @@ namespace WebApiTamagotchi.Controllers
             }
         }
 
+        [Route("SignUp")]
+        [HttpPost]
+        public void SignUp([FromBody] PlayerDTO player)
+        {
+            TamagotchiBL.Models.Player p1 = new Player()
+            {
+                PlayerName = player.PlayerName,
+                PlayerLastName = player.PlayerLastName,
+                PlayerBirthDay = player.PlayerBirthDay,
+                PlayerEmail = player.PlayerEmail,
+                PlayerGenedr = player.PlayerGender,
+                PlayerUsername = player.PlayerUsername,
+                PlayerPassword = player.PlayerPassword
+            };
 
+            Player p = context.Players.Where(pp => pp.PlayerEmail == player.PlayerEmail).FirstOrDefault();
+            if (p == null)
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                context.Players.Add(p1);
+                context.SaveChanges();
+            }
+            else
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+            }
+        }
         [Route("GetPets")]
         [HttpGet]
         public List<PetDTO> GetPets()
