@@ -122,6 +122,31 @@ namespace WebApiTamagotchi.Controllers
             }
         }
 
+        [Route("Update")]
+        [HttpPost]
+        public void Update([FromBody] PlayerDTO p)
+        {
+            PlayerDTO currentPlayer = HttpContext.Session.GetObject<PlayerDTO>("player");
+            if (currentPlayer == null)
+            {
+                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                return;
+            }
+            Player player = context.Login(currentPlayer.PlayerEmail, currentPlayer.PlayerPassword);
+            p.PlayerName = player.PlayerName;
+            p.PlayerLastName = player.PlayerLastName;
+            p.PlayerUsername = player.PlayerUsername;
+            p.PlayerPassword = player.PlayerPassword;
+            p.PlayerEmail = player.PlayerEmail;
+            p.PlayerBirthDay = player.PlayerBirthDay;
+
+            context.SaveChanges();
+            HttpContext.Session.SetObject("player", p);
+            context.SaveChanges();
+
+        }
+
+
 
         [Route("Login")]
         [HttpGet]

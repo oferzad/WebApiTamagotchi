@@ -13,6 +13,9 @@ namespace WebApiTamagotchi.DataTransferObjects
         public string PlayerLastName { get; set; }
         public string PlayerEmail { get; set; }
         public DateTime PlayerBirthDay { get; set; }
+        public string PlayerPassword { get; set; }
+        public string PlayerUsername { get; set; }
+
 
         public PlayerDTO() { }
         public PlayerDTO(Player p)
@@ -22,6 +25,8 @@ namespace WebApiTamagotchi.DataTransferObjects
             PlayerLastName = PlayerLastName;
             PlayerBirthDay = p.PlayerBirthDay;
             PlayerEmail = p.PlayerEmail;
+            PlayerPassword = p.PlayerPassword;
+            PlayerUsername = p.PlayerUsername;
         }
     }
 }
