@@ -185,7 +185,9 @@ namespace WebApiTamagotchi.Controllers
                 PlayerPassword = player.PlayerPassword
             };
 
-            Player p = context.Players.Where(pp => pp.PlayerEmail == player.PlayerEmail).FirstOrDefault();
+            
+
+            Player p = context.SignUp(p1);
             if (p == null)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
@@ -197,6 +199,7 @@ namespace WebApiTamagotchi.Controllers
                 Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
             }
         }
+
         [Route("GetPets")]
         [HttpGet]
         public List<PetDTO> GetPets()

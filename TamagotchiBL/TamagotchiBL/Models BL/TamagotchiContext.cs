@@ -14,6 +14,11 @@ namespace TamagotchiBL.Models
             return p;
         }
 
+        public Player SignUp (Player p)
+        {
+             p = this.Players.Where(pp => pp.PlayerEmail == p.PlayerEmail).FirstOrDefault();
+            return p;
+        }
         public List<ActionOption> GetAllGames()
         {
             const int OPTION_PLAY = 3;

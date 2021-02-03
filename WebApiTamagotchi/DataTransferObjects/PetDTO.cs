@@ -11,7 +11,7 @@ namespace WebApiTamagotchi.DataTransferObjects
         public int PetId { get; set; }
         public string PetName { get; set; }
         public int PlayerId { get; set; }
-        public double PetWeight { get; set; }
+        public int PetWeight { get; set; }
         public DateTime PetBirthDay { get; set; }
         public int HungerLevel { get; set; }
         public int CleaningLevel { get; set; }
