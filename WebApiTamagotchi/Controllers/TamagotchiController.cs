@@ -138,7 +138,7 @@ namespace WebApiTamagotchi.Controllers
             p.PlayerUsername = player.PlayerUsername;
             p.PlayerPassword = player.PlayerPassword;
             p.PlayerEmail = player.PlayerEmail;
-            p.PlayerBirthDay = player.PlayerBirthDay;
+            
 
             context.SaveChanges();
             HttpContext.Session.SetObject("player", p);
